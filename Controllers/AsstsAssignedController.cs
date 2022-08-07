@@ -14,7 +14,6 @@ namespace AssetsManager.Controllers
     public class AsstsAssignedController : ControllerBase
     {
         private readonly IAssetAssignedRepository _assetAssignedRepository;
-      
         public AsstsAssignedController(IAssetAssignedRepository assetAssignedRepository)
         {
             _assetAssignedRepository = assetAssignedRepository;
@@ -42,9 +41,7 @@ namespace AssetsManager.Controllers
         public async Task<IActionResult> AddNewAssetAsigned([FromBody] AssetsAssignedDetail asigned)
         {
             var id = await _assetAssignedRepository.AddAssetAssigned(asigned);
-            //asigned.AssignedId = id;
-            //return 201 status code
-            // await Updatestatus(asigned.AssetsId,true);
+           
             return Ok(await _assetAssignedRepository.GetAssetAssignedByIdAsync(id));
         }
 
