@@ -58,5 +58,16 @@ namespace AssetsManager.Controllers
             await _assetsDetilsRepository.DeleteAssetAsync(Assetid);
             return Ok();
         }
+
+        [HttpPost("{assetid}")]
+        public async Task<IActionResult> EmpPicCreate([FromRoute]int assetid, [FromForm] IFormFile file)
+        {
+            string str = await _assetsDetilsRepository.AddassetPicAsync(file);
+            return Ok(str);
+
+        }
+
+
+
     }
 }

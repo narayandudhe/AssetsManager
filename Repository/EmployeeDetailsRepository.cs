@@ -1,7 +1,9 @@
 ﻿using AssetsManager.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,7 +25,13 @@ namespace AssetsManager.Repository
                 EmployeeId=x.EmployeeId,
                 EmployeeAddress=x.EmployeeAddress,
                 EmployeeDepName=x.EmployeeDepName,
-                EmployeeName=x.EmployeeName
+                EmployeeName=x.EmployeeName,
+                EmployeeProfilePicUrl = x.EmployeeProfilePicUrl,
+                EmployeeSalary = x.EmployeeSalary,
+                DateOfBirth = x.DateOfBirth,
+                DateOfJoining = x.DateOfJoining,
+                EmployeeEmailId = x.EmployeeEmailId,
+                EmployeeMobileNo = x.EmployeeMobileNo
             }).ToListAsync();
 
             return records;
@@ -36,7 +44,13 @@ namespace AssetsManager.Repository
                 EmployeeId = x.EmployeeId,
                 EmployeeAddress=x.EmployeeAddress,
                 EmployeeDepName=x.EmployeeDepName,
-                EmployeeName=x.EmployeeName
+                EmployeeName=x.EmployeeName,
+                EmployeeProfilePicUrl = x.EmployeeProfilePicUrl,
+                EmployeeSalary = x.EmployeeSalary,
+                DateOfBirth = x.DateOfBirth,
+                DateOfJoining = x.DateOfJoining,
+                EmployeeEmailId = x.EmployeeEmailId,
+                EmployeeMobileNo = x.EmployeeMobileNo
             }).FirstOrDefaultAsync();
             
             return record;
@@ -48,7 +62,14 @@ namespace AssetsManager.Repository
             {
                 EmployeeName=employee.EmployeeName,
                 EmployeeDepName=employee.EmployeeDepName,
-                EmployeeAddress=employee.EmployeeAddress
+                EmployeeAddress=employee.EmployeeAddress,
+                EmployeeProfilePicUrl = employee.EmployeeProfilePicUrl,
+                EmployeeSalary = employee.EmployeeSalary,
+                DateOfBirth = employee.DateOfBirth,
+                DateOfJoining = employee.DateOfJoining,
+                EmployeeEmailId = employee.EmployeeEmailId,
+                EmployeeMobileNo = employee.EmployeeMobileNo
+
             };
             _context.EmployeeDetails.Add(record);
             await _context.SaveChangesAsync();
@@ -63,6 +84,12 @@ namespace AssetsManager.Repository
                 emp.EmployeeAddress = employee.EmployeeAddress;
                 emp.EmployeeDepName = employee.EmployeeDepName;
                 emp.EmployeeName = employee.EmployeeName;
+                emp.EmployeeProfilePicUrl = employee.EmployeeProfilePicUrl;
+                emp.EmployeeSalary = employee.EmployeeSalary;
+                emp.DateOfBirth = employee.DateOfBirth;
+                emp.DateOfJoining = employee.DateOfJoining;
+                emp.EmployeeEmailId = employee.EmployeeEmailId;
+                emp.EmployeeMobileNo = employee.EmployeeMobileNo;
                 await _context.SaveChangesAsync();
             }
         }
@@ -73,5 +100,31 @@ namespace AssetsManager.Repository
              _context.EmployeeDetails.Remove(record);
             await _context.SaveChangesAsync ();
         }
+
+        public async Task<string> AddempPicAsync(IFormFile file)
+        {
+            string fileName;
+            try
+            {
+                var ext = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
+                fileName = DateTime.Now.Ticks + ext;
+                var pathbuilt = Path.Combine(Directory.GetCurrentDirectory(), "EmployeePic");
+                if (!Directory.Exists(pathbuilt))
+                {
+                    Directory.CreateDirectory(pathbuilt);
+                }
+                var pathh = Path.Combine(Directory.GetCurrentDirectory(), "EmployeePic", fileName);
+                using (var stream = new FileStream(pathh, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                return "/EmployeePic/"+fileName;
+            }
+            catch (Exception e)
+            {
+                return e.Message.ToString();
+            }
+        }
+      
     }
 }

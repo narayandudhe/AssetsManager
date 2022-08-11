@@ -1,7 +1,9 @@
 ﻿using AssetsManager.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,7 +27,11 @@ namespace AssetsManager.Repository
                 AssetModel = x.AssetModel,
                 AssetsCompanyName = x.AssetsCompanyName,
                 AssetsSerialNo=x.AssetsSerialNo,
-                AsstsName=x.AsstsName
+                AsstsName=x.AsstsName,
+                AssetImageUrl = x.AssetImageUrl,
+                AssetPurchaseDate = x.AssetPurchaseDate,
+                AssetsWarrenty = x.AssetsWarrenty,
+                AssetPrice = x.AssetPrice
             }).ToListAsync();
 
             return records;
@@ -40,7 +46,11 @@ namespace AssetsManager.Repository
                 AssetModel = x.AssetModel,
                 AssetsCompanyName = x.AssetsCompanyName,
                 AssetsSerialNo=x.AssetsSerialNo,
-                AsstsName=x.AsstsName
+                AsstsName=x.AsstsName,
+                AssetImageUrl = x.AssetImageUrl,
+                AssetPurchaseDate = x.AssetPurchaseDate,
+                AssetsWarrenty = x.AssetsWarrenty,
+                AssetPrice = x.AssetPrice
             }).FirstOrDefaultAsync();
 
             return record;
@@ -54,7 +64,11 @@ namespace AssetsManager.Repository
                 AssetModel = assets.AssetModel,
                 AssetsCompanyName = assets.AssetsCompanyName,
                 AssetsSerialNo = assets.AssetsSerialNo,
-                AsstsName = assets.AsstsName
+                AsstsName = assets.AsstsName,
+                AssetImageUrl = assets.AssetImageUrl,
+                AssetPurchaseDate = assets.AssetPurchaseDate,
+                AssetsWarrenty = assets.AssetsWarrenty,
+                AssetPrice = assets.AssetPrice
             };
             _context.AssetsDetails.Add(record);
             await _context.SaveChangesAsync();
@@ -71,6 +85,10 @@ namespace AssetsManager.Repository
                 ass.AssetsCompanyName = assets.AssetsCompanyName;
                 ass.AssetsSerialNo = assets.AssetsSerialNo;
                 ass.AsstsName = assets.AsstsName;
+                ass.AssetImageUrl = assets.AssetImageUrl;
+                ass.AssetPurchaseDate = assets.AssetPurchaseDate;
+                ass.AssetsWarrenty = assets.AssetsWarrenty;
+                ass.AssetPrice = assets.AssetPrice;
                 await _context.SaveChangesAsync();
             }
         }
@@ -82,6 +100,33 @@ namespace AssetsManager.Repository
             await _context.SaveChangesAsync();
         }
 
-        
+
+        public async Task<string> AddassetPicAsync(IFormFile file)
+        {
+            string fileName;
+            try
+            {
+                var ext = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
+                fileName = DateTime.Now.Ticks + ext;
+                var pathbuilt = Path.Combine(Directory.GetCurrentDirectory(), "AssetPic");
+                if (!Directory.Exists(pathbuilt))
+                {
+                    Directory.CreateDirectory(pathbuilt);
+                }
+                var pathh = Path.Combine(Directory.GetCurrentDirectory(), "AssetPic", fileName);
+                using (var stream = new FileStream(pathh, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                return "~/AssetPic/"+fileName;
+            }
+            catch (Exception e)
+            {
+                return e.Message.ToString();
+            }
+        }
+
+
+
     }
 }

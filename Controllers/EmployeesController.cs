@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace AssetsManager.Controllers
@@ -60,5 +63,13 @@ namespace AssetsManager.Controllers
             await _employeeDetilsRepository.DeleteEmployeeAsync(employeeid);
             return Ok();
         }
+        [HttpPost("{id}")]
+        public async Task<IActionResult> EmpPicCreate([FromRoute] int id,[FromForm] IFormFile file)
+        {
+            string str=await _employeeDetilsRepository.AddempPicAsync(file);
+            return Ok(str);
+
+        }
+
     }
 }

@@ -2,16 +2,20 @@ using AssetsManager.Models;
 using AssetsManager.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace AssetsManager
 {
@@ -50,16 +54,28 @@ namespace AssetsManager
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            app.UseFileServer();
+            app.UseStaticFiles(); // For the wwwroot folder
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                                    Path.Combine(Directory.GetCurrentDirectory(), @"EmployeePic")),
+                RequestPath = new PathString("/EmployeePic")
+            });
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+
             app.UseRouting();
 
             app.UseCors();
 
-            app.UseAuthorization();
+
+                app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

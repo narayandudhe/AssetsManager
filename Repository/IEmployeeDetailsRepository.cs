@@ -1,4 +1,5 @@
 ﻿using AssetsManager.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace AssetsManager.Repository
         Task<int> AddEmployee(EmployeeDetail employee);
         Task UpdateEmployeeAsync(int employeeid, EmployeeDetail employee);
         Task DeleteEmployeeAsync(int Employeeid);
+        Task<string> AddempPicAsync(IFormFile file);
     }
 }

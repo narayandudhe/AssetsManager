@@ -21,7 +21,14 @@ namespace AssetsManager.Models
         public virtual DbSet<AssetsDetail> AssetsDetails { get; set; }
         public virtual DbSet<EmployeeDetail> EmployeeDetails { get; set; }
 
-      
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=AssetManagerDB;Trusted_Connection=True;");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -59,12 +66,6 @@ namespace AssetsManager.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.HasOne(d => d.Assets)
-                    .WithMany(p => p.AssetsAssignedDetails)
-                    .HasForeignKey(d => d.AssetsId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Assets_Assigned_Details_Assets_Details");
-
                 entity.HasOne(d => d.Employee)
                     .WithMany(p => p.AssetsAssignedDetails)
                     .HasForeignKey(d => d.EmployeeId)
@@ -78,9 +79,15 @@ namespace AssetsManager.Models
 
                 entity.ToTable("Assets_Details");
 
+                entity.Property(e => e.AssetImageUrl).HasMaxLength(200);
+
                 entity.Property(e => e.AssetModel)
                     .IsRequired()
                     .HasMaxLength(100);
+
+                entity.Property(e => e.AssetPrice).HasColumnType("numeric(10, 2)");
+
+                entity.Property(e => e.AssetPurchaseDate).HasColumnType("date");
 
                 entity.Property(e => e.AssetsCompanyName)
                     .IsRequired()
@@ -103,6 +110,10 @@ namespace AssetsManager.Models
 
                 entity.ToTable("Employee_Details");
 
+                entity.Property(e => e.DateOfBirth).HasColumnType("date");
+
+                entity.Property(e => e.DateOfJoining).HasColumnType("date");
+
                 entity.Property(e => e.EmployeeAddress)
                     .IsRequired()
                     .HasMaxLength(500);
@@ -111,10 +122,20 @@ namespace AssetsManager.Models
                     .IsRequired()
                     .HasMaxLength(50);
 
+                entity.Property(e => e.EmployeeEmailId).HasMaxLength(150);
+
+                entity.Property(e => e.EmployeeMobileNo).HasColumnType("numeric(10, 0)");
+
                 entity.Property(e => e.EmployeeName)
                     .IsRequired()
                     .HasMaxLength(150)
                     .IsUnicode(false);
+
+                entity.Property(e => e.EmployeeProfilePicUrl)
+                    .HasMaxLength(500)
+                    .HasColumnName("EmployeeProfilePicURL");
+
+                entity.Property(e => e.EmployeeSalary).HasColumnType("numeric(7, 2)");
             });
 
             OnModelCreatingPartial(modelBuilder);

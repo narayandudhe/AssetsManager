@@ -16,6 +16,12 @@ namespace AssetsManager.Models
         public string EmployeeName { get; set; }
         public string EmployeeAddress { get; set; }
         public string EmployeeDepName { get; set; }
+        public string EmployeeProfilePicUrl { get; set; }
+        public DateTime? DateOfJoining { get; set; }
+        public decimal? EmployeeSalary { get; set; }
+        public long? EmployeeMobileNo { get; set; }
+        public string EmployeeEmailId { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         public virtual ICollection<AssetsAssignedDetail> AssetsAssignedDetails { get; set; }
     }

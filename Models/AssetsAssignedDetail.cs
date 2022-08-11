@@ -17,7 +17,6 @@ namespace AssetsManager.Models
         public string EmployeeName { get; set; }
         public string DateOfAssigned { get; set; }
 
-        public virtual AssetsDetail Assets { get; set; }
         public virtual EmployeeDetail Employee { get; set; }
     }
 }

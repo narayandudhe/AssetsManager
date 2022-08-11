@@ -18,7 +18,6 @@ namespace AssetsManager.Controllers
         {
             _assetAssignedRepository = assetAssignedRepository;
         }
-
         [HttpGet("")]
         public async Task<IActionResult> GetAllAssetsAsignedDetils()
         {
