@@ -95,7 +95,13 @@ namespace AssetsManager.Repository
 
         public async Task DeleteAssetAsync(int assetid)
         {
-            var record = new AssetsDetail() { AssetsId = assetid };
+            var record = _context.AssetsDetails.Where(e => e.AssetsId == assetid).FirstOrDefault();
+            var pathh = Path.Combine(Directory.GetCurrentDirectory(), @"Pictures/EmployeePic", record.AssetImageUrl);
+
+            if (File.Exists(pathh))
+            {
+                File.Delete(pathh);
+            }
             _context.AssetsDetails.Remove(record);
             await _context.SaveChangesAsync();
         }
@@ -108,17 +114,17 @@ namespace AssetsManager.Repository
             {
                 var ext = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
                 fileName = DateTime.Now.Ticks + ext;
-                var pathbuilt = Path.Combine(Directory.GetCurrentDirectory(), "AssetPic");
+               /* var pathbuilt = Path.Combine(Directory.GetCurrentDirectory(), "AssetPic");
                 if (!Directory.Exists(pathbuilt))
                 {
                     Directory.CreateDirectory(pathbuilt);
-                }
-                var pathh = Path.Combine(Directory.GetCurrentDirectory(), "AssetPic", fileName);
+                }*/
+                var pathh = Path.Combine(Directory.GetCurrentDirectory(), @"Pictures/AssetPic", fileName);
                 using (var stream = new FileStream(pathh, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
                 }
-                return "~/AssetPic/"+fileName;
+                return fileName;
             }
             catch (Exception e)
             {

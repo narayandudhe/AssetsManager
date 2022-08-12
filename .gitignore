@@ -363,5 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 #ignore image folder
-/EmployeePic
-/AssetPic
+/Pictures/AssetPic
+/Pictures/EmployeePic

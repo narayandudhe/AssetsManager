@@ -55,19 +55,27 @@ namespace AssetsManager
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
-            app.UseFileServer();
-            app.UseStaticFiles(); // For the wwwroot folder
-
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(
-                                    Path.Combine(Directory.GetCurrentDirectory(), @"EmployeePic")),
-                RequestPath = new PathString("/EmployeePic")
-            });
+            
+          
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseFileServer(new FileServerOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+               Path.Combine(Directory.GetCurrentDirectory(), @"Pictures/AssetPic")),
+                RequestPath = "/Aimage",
+                EnableDefaultFiles = true
+            });
+            app.UseFileServer(new FileServerOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+              Path.Combine(Directory.GetCurrentDirectory(), @"Pictures/EmployeePic")),
+                RequestPath = "/Eimage",
+                EnableDefaultFiles = true
+            });
+            app.UseStaticFiles(); // For the wwwroot folder
 
 
             app.UseRouting();

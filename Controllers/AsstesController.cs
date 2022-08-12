@@ -49,7 +49,7 @@ namespace AssetsManager.Controllers
         public async Task<IActionResult> UpdateAssetDetails([FromBody] AssetsDetail assets, [FromRoute] int Assetid)
         {
             await _assetsDetilsRepository.UpdateAssetAsync(Assetid, assets);
-            return Ok();
+            return Ok(assets);
         }
 
         [HttpDelete("{Assetid}")]

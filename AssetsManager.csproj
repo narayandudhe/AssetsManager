@@ -16,7 +16,8 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="EmployeePic\" />
+    <Folder Include="Pictures\AssetPic\" />
+    <Folder Include="Pictures\EmployeePic\" />
   </ItemGroup>
 
 

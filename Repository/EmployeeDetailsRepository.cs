@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.Hosting.Server;
 
 namespace AssetsManager.Repository
 {
@@ -26,7 +29,7 @@ namespace AssetsManager.Repository
                 EmployeeAddress=x.EmployeeAddress,
                 EmployeeDepName=x.EmployeeDepName,
                 EmployeeName=x.EmployeeName,
-                EmployeeProfilePicUrl = x.EmployeeProfilePicUrl,
+                EmployeeProfilePicUrl =x.EmployeeProfilePicUrl,
                 EmployeeSalary = x.EmployeeSalary,
                 DateOfBirth = x.DateOfBirth,
                 DateOfJoining = x.DateOfJoining,
@@ -45,7 +48,7 @@ namespace AssetsManager.Repository
                 EmployeeAddress=x.EmployeeAddress,
                 EmployeeDepName=x.EmployeeDepName,
                 EmployeeName=x.EmployeeName,
-                EmployeeProfilePicUrl = x.EmployeeProfilePicUrl,
+                EmployeeProfilePicUrl=x.EmployeeProfilePicUrl,
                 EmployeeSalary = x.EmployeeSalary,
                 DateOfBirth = x.DateOfBirth,
                 DateOfJoining = x.DateOfJoining,
@@ -96,8 +99,14 @@ namespace AssetsManager.Repository
 
         public async Task DeleteEmployeeAsync(int Employeeid)
         {
-            var record = new EmployeeDetail() { EmployeeId=Employeeid};
-             _context.EmployeeDetails.Remove(record);
+            var rec=_context.EmployeeDetails.Where(e=>e.EmployeeId==Employeeid).FirstOrDefault();
+            var pathh = Path.Combine(Directory.GetCurrentDirectory(), @"Pictures/EmployeePic", rec.EmployeeProfilePicUrl);
+
+            if (File.Exists(pathh))
+            {
+                File.Delete(pathh);
+            }
+            _context.EmployeeDetails.Remove(rec);
             await _context.SaveChangesAsync ();
         }
 
@@ -108,17 +117,13 @@ namespace AssetsManager.Repository
             {
                 var ext = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
                 fileName = DateTime.Now.Ticks + ext;
-                var pathbuilt = Path.Combine(Directory.GetCurrentDirectory(), "EmployeePic");
-                if (!Directory.Exists(pathbuilt))
-                {
-                    Directory.CreateDirectory(pathbuilt);
-                }
-                var pathh = Path.Combine(Directory.GetCurrentDirectory(), "EmployeePic", fileName);
+          
+                var pathh = Path.Combine(Directory.GetCurrentDirectory(), @"Pictures/EmployeePic", fileName);
                 using (var stream = new FileStream(pathh, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
                 }
-                return "/EmployeePic/"+fileName;
+                return fileName;
             }
             catch (Exception e)
             {
